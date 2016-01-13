@@ -2,8 +2,8 @@
 
 -create Makefile
 
--make lexer read from file
-
 -add tokens
 
 -how to handle INDENT?
+
+-Add test cases
