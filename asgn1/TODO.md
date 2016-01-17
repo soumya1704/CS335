@@ -1,9 +1,11 @@
 **TASKS TO BE DONE**
 
--add tokens
-
 -how to handle INDENT?
 
 -Add test cases
 
--code tabular content
+-implement strconcat in place of filestream methods
+
+-Extensive testing
+
+-Conversion to C++(to use STL)
