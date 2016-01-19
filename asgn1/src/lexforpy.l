@@ -98,13 +98,16 @@
 
 "None"										return LIT_NONE;
 
+("#")(.)*(\n)								;
+
 [_a-zA-Z][_a-zA-Z0-9]*						return IDENTIFIER;
 
 [a-zA-Z]?\"(\\.|[^\\"])*\"					return LIT_STR;
 
-#.											;
 [ \n\t]										;
 .											{printf("Unidentified token\n"); return -1;}
+
+
 
 %%
 // need to use y.tab.h insteadof lexforpy.h. Read up yacc
