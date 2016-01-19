@@ -2,7 +2,7 @@
 
 -how to handle INDENT?
 
--Add test cases
+-handle single quotes
 
 -implement strconcat in place of filestream methods
 

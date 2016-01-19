@@ -1,6 +1,6 @@
 # CS335
 
-Compiler design assignments. Nothing works(properly)
+Compiler design assignments.
 
 **Assignment 1**
 
