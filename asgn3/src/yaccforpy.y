@@ -37,9 +37,44 @@ simple_stmt 	: small_stmt ';' simple_stmt
 small_stmt 		: expr_stmt
 				| import_stmt
 
-expr_stmt 		: testlist_star_expr augassign testlist
-				| testlist_star_expr '=' expr_stmt
-				| testlist_star_expr
+expr_stmt 		: testlist augassign testlist
+				| testlist '=' expr_stmt
+				| testlist
 
-testlist_star_expr 	: test ',' testlist_star_expr
-					| 	 
+testlist 	 	: test ',' testlist_star_expr
+				| test
+
+augassign 		: '+='
+				| '-='
+				| '*='
+				| '/='
+				| '**='
+
+test 	 		: expr comp_op test
+				| expr
+
+comp_op 		: '<'
+				| '>'
+				| '=='
+				| '<='
+				| '>='
+				| '<>'
+				| '!='
+
+expr 			: term '+' expr
+				| term '-' expr
+				| term				
+
+term 			: factor '*' term
+				| factor '/' term
+				| factor '%' term
+				| factor
+
+factor 			: '+' factor
+				| '-' factor
+				| power
+
+power 			: atom_expr '**' factor
+				| atom_expr
+
+atom_expr 		: atom trailer												
