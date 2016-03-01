@@ -13,12 +13,23 @@ extern "C" int yylex();
 "from"										return FROM;
 "if"										return IF;
 "import"									return IMPORT;	
-"while"										return WHILE;	
-													
+"while"										return WHILE;
+"in"										return IN;
+"as"										return AS;			
 "and"										return AND;
 "not"										return NOT;	
 "or"										return OR;
 	
+"<"										return yytext[0];
+">"										return yytext[0];
+"=="										return EQ;
+"<="										return LEQ;
+">="										return GEQ;
+"<>"										return NEQ;
+"!="										return NNEQ;
+
+"True"										return TRUE;
+"False"										return FALSE;
 "("											return yytext[0];
 ")"											return yytext[0];
 
