@@ -20,6 +20,17 @@ void yyerror(const char *s);
 %token <ival> INTEGER;
 %token <fval> FLOAT;
 %token <sval> NAME;
+%token DEF;
+%token ELIF;
+%token ELSE;
+%token FOR;
+%token FROM;
+%token IF;
+%token IMPORT;	
+%token WHILE;												
+%token AND;
+%token NOT;	
+%token OR;
 %token NEWLINE;
 %token INDENT;
 %token DEDENT;
@@ -36,18 +47,18 @@ compound_stmt 	: if_stmt
 				| for_stmt
 ;
 
-if_stmt 		: "if" test ':' suite 
-				| "if" test ':' suite "else" ':' suite
-				| "if" test ':' suite elif_stmt
-				| "if" test ':' suite elif_stmt "else" ':' suite
+if_stmt 		: IF test ':' suite 
+				| IF test ':' suite "else" ':' suite
+				| IF test ':' suite elif_stmt
+				| IF test ':' suite elif_stmt "else" ':' suite
 ;
 
-elif_stmt		: "elif" test ':' suite
-				| "elif" test ':' suite elif_stmt 
+elif_stmt		: ELIF test ':' suite
+				| ELIF test ':' suite elif_stmt 
 ;
 
-while_stmt 		: "while" test ':' suite 
-				| "while" test ':' suite "else" ':' suite
+while_stmt 		: WHILE test ':' suite 
+				| WHILE test ':' suite "else" ':' suite
 ;
 
 for_stmt		: "for" exprlist "in" testlist ':' suite 
@@ -116,11 +127,11 @@ factor 			: '+' factor						{cout<<"+ factor";}
 				| '-' factor						{cout<<"- factor";}
 				| power								{cout<<"power";}
 ;
-power 			: atom_expr "**" factor				{cout<<"atom_expr ** factor";}
+power 			: atom_expr "**DEF" factor				{cout<<"atom_expr ** factor";}
 				| atom_expr							{cout<<"atom_expr";}
 ;
-atom_expr 		: atom_expr							{cout<<"atom_expr";}
-				| atom_expr trailer					{cout<<"atom_expr trailer";}
+atom_expr 		: atom								{cout<<"atom";}
+				| atom trailer						{cout<<"atom trailer";}
 ;
 atom 			: NAME 								{cout<<$1;}
 				| INTEGER							{cout<<$1;}
@@ -166,6 +177,7 @@ int main(int argc, char** argv) {
 	// parse through the input until there is no more:
 	do {
 		yyparse();
+		cout << endl;
 	} while (!feof(yyin));	
 }
 
