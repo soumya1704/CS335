@@ -44,8 +44,8 @@ void yyerror(const char *s);
 %token NNEQ;
 %token AS;
 %token POW;
-%token FALSE;
-%token TRUE;
+%token BOOL_FALSE;
+%token BOOL_TRUE;
 %token IN;
 
 %%
@@ -55,12 +55,12 @@ single_input	: NEWLINE 							{}
 				| compound_stmt						{cout<<"compound_stmt ";}
 ;
 
-compound_stmt 	: if_stmt 
-				| while_stmt
-				| for_stmt
+compound_stmt 	: if_stmt							{cout<<"if_stmt ";} 
+				| while_stmt						{cout<<"while_stmt ";} 
+				| for_stmt							{cout<<"for_stmt ";} 
 ;
 
-if_stmt 		: IF test ':' suite 
+if_stmt 		: IF test ':' suite 				
 				| IF test ':' suite ELSE ':' suite
 				| IF test ':' suite elif_stmt
 				| IF test ':' suite elif_stmt ELSE ':' suite
@@ -110,11 +110,11 @@ expr_stmt 		: testlist augassign testlist		{cout<<"testlist augassign testlist "
 testlist 	 	: test ',' testlist					{cout<<"test , testlist ";}
 				| test								{cout<<"test ";}
 ;
-augassign 		: AUG_ADD								{cout<<"+=";}
-				| AUG_SUB								{cout<<"-=";}
-				| AUG_MUL								{cout<<"*=";}
-				| AUG_DIV								{cout<<"/=";}
-				| AUG_POW								{cout<<"**=";}
+augassign 		: AUG_ADD							{cout<<"+=";}
+				| AUG_SUB							{cout<<"-=";}
+				| AUG_MUL							{cout<<"*=";}
+				| AUG_DIV							{cout<<"/=";}
+				| AUG_POW							{cout<<"**=";}
 ;
 test 	 		: expr comp_op testlist				{cout<<"expr comp_op testlist";}
 				| expr 								{cout<<"expr";}
@@ -149,8 +149,8 @@ atom_expr 		: atom								{cout<<"atom ";}
 atom 			: NAME 								{cout<<$1;}
 				| INTEGER							{cout<<$1;}
 				| FLOAT								{cout<<$1;}
-				| TRUE								{cout<<"True ";}
-				| FALSE								{cout<<"False ";}
+				| BOOL_TRUE							{cout<<"True ";}
+				| BOOL_FALSE						{cout<<"False ";}
 ;
 trailer 		: '(' argslist ')'					{cout<<"( argslist ) ";}
 				| '.' NAME 							{cout<<". "<<$2;}
