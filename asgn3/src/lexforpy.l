@@ -19,28 +19,29 @@ size_t count_indent(char* s){
 			count+=4;
 	}
 	return count;
+// ^[ \t]*										{ 	//if(newline_is_hit){
+// 													newline_is_hit=false;
+// 													if(indent_level.empty())
+// 														indent_level.push(0);
+// 													line_indent_count=count_indent(yytext);
+// 													if(line_indent_count>indent_level.top()){
+// 														indent_level.push(line_indent_count);
+// 														return INDENT;
+// 													}else if(line_indent_count<indent_level.top()){
+// 														indent_level.pop();
+// 														size_t i;	
+// 														for (i = 0; i < line_indent_count; ++i){
+// 															unput(' ');		
+// 														}
+// 														return DEDENT;
+// 													}
+// 												}
+											// }
+
 }
 %}
 
 %%
-^[ \t]*										{ 	if(newline_is_hit){
-													newline_is_hit=false;
-													if(indent_level.empty())
-														indent_level.push(0);
-													line_indent_count=count_indent(yytext);
-													if(line_indent_count>indent_level.top()){
-														indent_level.push(line_indent_count);
-														return INDENT;
-													}else if(line_indent_count<indent_level.top()){
-														indent_level.pop();
-														size_t i;	
-														for (i = 0; i < line_indent_count; ++i){
-															unput(' ');		
-														}
-														return DEDENT;
-													}
-												}
-											}
 
 "def"										return DEF;
 "elif"										return ELIF;
@@ -103,6 +104,7 @@ size_t count_indent(char* s){
 
 [\n]										{ newline_is_hit=true; return NEWLINE; }
 
+[ \t]										;
 .											{printf("Unidentified token\n"); return -1;}
 
 
