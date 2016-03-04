@@ -14,7 +14,9 @@ extern "C" FILE *yyin;
 void yyerror(const char *s);	
 
 stack<int> rule_no;
+stack<int> rule_no_temp;
 stack<string> parent;
+stack<string> parent_temp;
 stack<string> statement;
 stack<string> statement_temp;
 stack<string> statement_temp2;
@@ -60,11 +62,14 @@ stack<string> statement_temp2;
 %token BOOL_FALSE;
 %token BOOL_TRUE;
 %token IN;
+// | expr ','							{rule_no.push(18);parent.push("exprlist");} 
+// | expr ',' exprlist					{rule_no.push(19);parent.push("exprlist");} 
+				
 
 %%
 
 single_input	: NEWLINE 							{}
-				| simple_stmt						{rule_no.push(2);parent.push("single_input");}
+				| stmts								{rule_no.push(2);parent.push("single_input");}
 				| compound_stmt						{rule_no.push(3);parent.push("single_input");}
 ;
 
@@ -92,8 +97,7 @@ for_stmt		: FOR exprlist IN testlist ':' suite {rule_no.push(15);parent.push("fo
 ;
 
 exprlist 		: expr 								{rule_no.push(17);parent.push("exprlist");} 
-				| expr ','							{rule_no.push(18);parent.push("exprlist");} 
-				| expr ',' exprlist					{rule_no.push(19);parent.push("exprlist");} 
+				| expr ',' exprlist					{rule_no.push(19);parent.push("exprlist");}
 ;
 
 suite			: simple_stmt						{rule_no.push(20);parent.push("suite");} 
@@ -177,7 +181,8 @@ atom 			: NAME 								{rule_no.push(63);parent.push("atom");}
 ;
 
 trailer 		: '(' argslist ')'					{rule_no.push(68);parent.push("trailer");} 
-				| '.' NAME 							{rule_no.push(69);parent.push("trailer");} 
+				| '.' NAME 							{rule_no.push(69);parent.push("trailer");}
+				| '(' ')'							{rule_no.push(79);parent.push("trailer");} 
 ;
 
 argslist 		: arg ',' argslist					{rule_no.push(70);parent.push("argslist");} 
@@ -205,7 +210,7 @@ string find(int k){
 	string s="";
 	switch(k){
 		case 1 : return "NEWLINE" ;
-		case 2 : return "simple_stmt" ;
+		case 2 : return "stmts" ;
 		case 3 : return "compound_stmt" ;
 		case 4 : return "if_stmt" ;
 		case 5 : return "while_stmt" ;
@@ -282,6 +287,7 @@ string find(int k){
 		case 76 : return "dotted_names AS NAME" ;
 		case 77 : return "NAME . dotted_names" ;
 		case 78 : return "NAME" ;
+		case 79 : return "()" ; 
 	}
 	return s;
 }
@@ -297,13 +303,46 @@ int main(int argc, char** argv) {
 		cout << endl;
 	} while (!feof(yyin));
 	int q, flag = 0, k;
+
+	// ifstream file;
+ //    file.open (argv[1]);
+ //    string word1;
+ //    word1.clear();
+ //    while (file >> word1)
+ //    {
+ //    	statement.push(word1);
+ //    }
+
+// while(!rule_no.empty()){
+// 	cout<<rule_no.top()<<"	";
+// 	rule_no_temp.push(rule_no.top());
+// 	rule_no.pop();
+// }
+
+// while(!rule_no_temp.empty()){
+// 	rule_no.push(rule_no_temp.top());
+// 	rule_no_temp.pop();
+// }
+
+// while(!parent.empty()){
+// 	cout<<parent.top()<<"	";
+// 	parent_temp.push(parent.top());
+// 	parent.pop();
+// }
+
+// while(!parent_temp.empty()){
+// 	parent.push(parent_temp.top());
+// 	parent_temp.pop();
+// }
+
 	string temp1, temp2, temp3, ex1, word, output;
 	q = rule_no.size();
 	temp1 = parent.top();
-	parent.pop();
+	statement.push(temp1);
 	while(!rule_no.empty()){
 		k = rule_no.top();
 		rule_no.pop();
+		parent.pop();
 		if(!parent.empty()){
 			temp2 = parent.top();
 		}
@@ -324,7 +363,9 @@ int main(int argc, char** argv) {
 						flag = 1;
 					}
 					else{
+						statement_temp2.push("<font color=\"red\">"); //token for color
 						statement_temp2.push(word);
+						statement_temp2.push("</font>"); //close token for color change
 					}
 				}
 				while(!statement_temp2.empty()){
@@ -359,7 +400,7 @@ int main(int argc, char** argv) {
 			else if(temp3.compare(temp2)==0&&(temp3!="")){
 				statement_temp.push("</font>"); //close token for color change
 				statement_temp.push(temp3);
-				statement_temp.push("<font color=\"red\">"); //token for color
+				statement_temp.push("<font color=\"blue\">"); //token for color
 				while(!statement.empty()){
 					temp3 = statement.top();
 					statement.pop();
@@ -392,13 +433,15 @@ int main(int argc, char** argv) {
 			temp3 = statement_temp.top();
 			statement_temp.pop();
 			output += temp3;
+			output += " ";
 			statement.push(temp3);
 		}
 		if(temp2!=""){
 			temp1 = temp2;
 		}
 		a_file<<output;
-		a_file<<c++<<" ";
+		a_file<<"<br>";
+		//a_file<<c++<<" ";
 	}
 }
 

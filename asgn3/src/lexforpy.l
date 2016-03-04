@@ -3,12 +3,22 @@
 #include <stack>
 #include "yaccforpy.tab.h"
 
+#define DEDENT_THROW (	if(line_indent_count<indent_level.top()){\
+							indent_level.pop();\
+							size_t i;\
+							for (i = 0; i < line_indent_count; ++i){\
+								unput(' ');\
+							}\
+							std::cout<<"DEDENT"<<std::endl;\
+							return DEDENT;\
+						})
+
 extern "C" int yylex();
 
 size_t line_indent_count=0;
 std::stack<size_t> indent_level;
 int fake_outdent=0;
-bool newline_is_hit=true;
+bool newline_is_hit=false;
 size_t count_indent(char* s){
 	size_t count=0;
 	int i; 
@@ -19,30 +29,11 @@ size_t count_indent(char* s){
 			count+=4;
 	}
 	return count;
-// ^[ \t]*										{ 	//if(newline_is_hit){
-// 													newline_is_hit=false;
-// 													if(indent_level.empty())
-// 														indent_level.push(0);
-// 													line_indent_count=count_indent(yytext);
-// 													if(line_indent_count>indent_level.top()){
-// 														indent_level.push(line_indent_count);
-// 														return INDENT;
-// 													}else if(line_indent_count<indent_level.top()){
-// 														indent_level.pop();
-// 														size_t i;	
-// 														for (i = 0; i < line_indent_count; ++i){
-// 															unput(' ');		
-// 														}
-// 														return DEDENT;
-// 													}
-// 												}
-											// }
-
 }
 %}
 
 %%
-
+														
 "def"										return DEF;
 "elif"										return ELIF;
 "else"										return ELSE;
@@ -102,9 +93,43 @@ size_t count_indent(char* s){
 
 [_a-zA-Z][_a-zA-Z0-9]*						{ yylval.sval = strdup(yytext); return NAME; }
 
-[\n]										{ newline_is_hit=true; return NEWLINE; }
+[\n]										{ std::cout<<"NEWLINE"<<std::endl;return NEWLINE; }
 
-[ \t]										;
+^[ \t]*										{ 		
+													if(indent_level.empty())
+														indent_level.push(0);
+													line_indent_count=count_indent(yytext);
+													if(line_indent_count>indent_level.top()){
+														indent_level.push(line_indent_count);
+														std::cout<<"INDENT"<<std::endl;
+														return INDENT;
+													
+													}else if(line_indent_count<indent_level.top()){
+														indent_level.pop();
+														size_t i;	
+														for (i = 0; i < line_indent_count; ++i){
+															unput(' ');		
+														}
+														newline_is_hit=true;
+														std::cout<<"DEDENT"<<std::endl;
+														return DEDENT;
+													}												
+											}
+
+[ \t]+										{	if(newline_is_hit)
+													if(line_indent_count<indent_level.top()){
+														indent_level.pop();
+														size_t i;	
+														for (i = 0; i < line_indent_count; ++i){
+															unput(' ');		
+														}
+														newline_is_hit=true;
+														std::cout<<"DEDENT"<<std::endl;
+														return DEDENT;
+													}else 
+													newline_is_hit=false;
+											}
+
 .											{printf("Unidentified token\n"); return -1;}
 
 
