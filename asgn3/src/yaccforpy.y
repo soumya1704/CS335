@@ -64,6 +64,7 @@ stack<string> statement_temp2;
 %token IN;
 // | expr ','							{rule_no.push(18);parent.push("exprlist");} 
 // | expr ',' exprlist					{rule_no.push(19);parent.push("exprlist");} 
+				// | NEWLINE INDENT stmts DEDENT NEWLINE		{rule_no.push(80);parent.push("suite");} 
 				
 
 %%
@@ -101,7 +102,7 @@ exprlist 		: expr 								{rule_no.push(17);parent.push("exprlist");}
 ;
 
 suite			: simple_stmt						{rule_no.push(20);parent.push("suite");} 
-				| NEWLINE INDENT stmts DEDENT		{rule_no.push(21);parent.push("suite");} 
+				| NEWLINE INDENT stmts DEDENT		{rule_no.push(21);parent.push("suite");}
 ;
 
 stmts			: stmt stmts						{rule_no.push(22);parent.push("stmts");} 
@@ -287,7 +288,9 @@ string find(int k){
 		case 76 : return "dotted_names AS NAME" ;
 		case 77 : return "NAME . dotted_names" ;
 		case 78 : return "NAME" ;
-		case 79 : return "()" ; 
+		case 79 : return "()" ;
+		case 80 : return "NEWLINE INDENT stmts DEDENT NEWLINE" ;
+		 
 	}
 	return s;
 }
