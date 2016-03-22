@@ -62,9 +62,6 @@ stack<string> statement_temp2;
 %token BOOL_FALSE;
 %token BOOL_TRUE;
 %token IN;
-// | expr ','							{rule_no.push(18);parent.push("exprlist");} 
-// | expr ',' exprlist					{rule_no.push(19);parent.push("exprlist");} 
-				// | NEWLINE INDENT stmts DEDENT NEWLINE		{rule_no.push(80);parent.push("suite");} 
 				
 
 %%
@@ -183,6 +180,7 @@ atom 			: NAME 								{rule_no.push(63);parent.push("atom");}
 
 trailer 		: '(' argslist ')'					{rule_no.push(68);parent.push("trailer");} 
 				| '.' NAME 							{rule_no.push(69);parent.push("trailer");}
+				| '.' NAME '(' argslist ')' 		{rule_no.push(80);parent.push("trailer");}
 				| '(' ')'							{rule_no.push(79);parent.push("trailer");} 
 ;
 
@@ -289,7 +287,7 @@ string find(int k){
 		case 77 : return "NAME . dotted_names" ;
 		case 78 : return "NAME" ;
 		case 79 : return "()" ;
-		case 80 : return "NEWLINE INDENT stmts DEDENT NEWLINE" ;
+		case 80 : return ". NAME ( argslist )" ;
 		 
 	}
 	return s;
@@ -297,47 +295,15 @@ string find(int k){
 
 int main(int argc, char** argv) {
 	int c=1;
+
 	ofstream a_file ("example.html");
 	FILE *fh;
 	if(argc==2&&(fh=fopen(argv[1],"r")))
 		yyin=fh;	
 	do {
 		yyparse();
-		cout << endl;
 	} while (!feof(yyin));
 	int q, flag = 0, k;
-
-	// ifstream file;
- //    file.open (argv[1]);
- //    string word1;
- //    word1.clear();
- //    while (file >> word1)
- //    {
- //    	statement.push(word1);
- //    }
-
-// while(!rule_no.empty()){
-// 	cout<<rule_no.top()<<"	";
-// 	rule_no_temp.push(rule_no.top());
-// 	rule_no.pop();
-// }
-
-// while(!rule_no_temp.empty()){
-// 	rule_no.push(rule_no_temp.top());
-// 	rule_no_temp.pop();
-// }
-
-// while(!parent.empty()){
-// 	cout<<parent.top()<<"	";
-// 	parent_temp.push(parent.top());
-// 	parent.pop();
-// }
-
-// while(!parent_temp.empty()){
-// 	parent.push(parent_temp.top());
-// 	parent_temp.pop();
-// }
-
 	string temp1, temp2, temp3, ex1, word, output;
 	q = rule_no.size();
 	temp1 = parent.top();
@@ -444,11 +410,10 @@ int main(int argc, char** argv) {
 		}
 		a_file<<output;
 		a_file<<"<br>";
-		//a_file<<c++<<" ";
 	}
 }
 
 void yyerror(const char *s) {
-	cout << "EEK, parse error!  Message: " << s << endl;
+	cout << "Message: " << s << endl;
 	exit(-1);
 }
