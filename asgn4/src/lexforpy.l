@@ -24,10 +24,12 @@ struct sym_tab
 };
 sym_tab* head=NULL;
 void placeit(std::string holding){
+	// printf("waste\n");
 	sym_tab* root;
 	sym_tab* temp;
 	sym_tab* ptemp;
 	if(head==NULL){
+		// printf("????\n");
 		root = new sym_tab;
 		root->next=NULL;
 		if(flag_def==1){
@@ -41,33 +43,43 @@ void placeit(std::string holding){
 		head = root;
 	}
 	else{
+		// printf("=======\n");
 		temp = head;
 		while(temp){
 			ptemp = temp;
 			temp=temp->next;
 		}
+		// printf("!!!!\n");
 		root = new sym_tab;
+		// printf("qqqq\n");
 		root->next=NULL;
 		if(flag_def==1){
 			root->type=1;
 			flag_def=0;
 		}
 		else{
+			// printf("aaaaaaaa\n");
 			root->type=2;
 		}
+		// printf("sssss\n");
 		root->name = holding;
+		// printf("ffff\n");
 		ptemp->next = root;
+		// printf("``````````\n");
 	}
 }
 void findit(std::string holding){
+	// printf("here\n");
 	int flag_holding = 0;
 	sym_tab* temp;
 	if(head!=NULL){
 	temp = head;	
 	}
 	else{
+		// printf("/////\n");
 		temp = NULL;
 	}
+	// printf("here2\n");
 	
 	while(temp!=NULL){
 		if(temp->name==holding){
@@ -76,8 +88,10 @@ void findit(std::string holding){
 		temp=temp->next;
 	}
 	if(flag_holding==0){
+		placeit(holding);
 	}	
 }
+
 
 %}
 

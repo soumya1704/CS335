@@ -48,7 +48,7 @@ stack<string> statement_temp2;
 	float fval;
 	char *sval;
 }
-%start S;
+%start single_input;
 %token <ival> INTEGER;
 %token <fval> FLOAT;
 %token <sval> NAME;
@@ -84,42 +84,58 @@ stack<string> statement_temp2;
 %token IN;
 %right '='
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %left UMINUS				
 %%
 
-S : I S | test S | W S | I | test | W
-	;
+single_input    : NEWLINE | stmts | compound_stmt
+;
 
-I :  IF test {lab1();} ':' E {lab2();} ELSE ':' E {lab3();}
-	;
+compound_stmt   : if_stmt | while_stmt
+;
 
-W : WHILE {lab5();} test {lab6();}':' E {lab7();}ELSE E{lab3();}
-	;
+suite           : simple_stmt | NEWLINE INDENT stmts DEDENT
+;
 
-test : E '<'{push();} E{codegen();}
-		| E '>'{push();} E{codegen();}
-		| E EQ{push_eq();} E{codegen();}
-		| E LEQ{push();} E{codegen();}
-		| E GEQ{push();} E{codegen();}
-		| E NEQ{push();} E{codegen();}
-		| E NNEQ{push();} E{codegen();}
-		| E
-		;
+stmts           : stmt stmts | stmt
+;
 
-E       : V '='{push();} E{codegen_assign();}
-         | E '+'{push();} E{codegen();}
-         | E '-'{push();} E{codegen();}
-         | E '*'{push();} E{codegen();}
-         | E '/'{push();} E{codegen();}
-         | '(' E ')'
-         | '-'{push();} E{codegen_umin();} %prec UMINUS
-         | V
-         | INTEGER{push();}
-         | FLOAT{push();}
-         ;
-V       : NAME {push_new();}
-        ;
+stmt            : simple_stmt | compound_stmt 
+;
+
+simple_stmt     : expr NEWLINE
+;
+
+if_stmt         : IF test {lab1();} ':' suite {lab2();} ELSE ':' suite {lab3();}
+;
+
+while_stmt      : WHILE {lab5();} test {lab6();} ':' suite{lab7();} ELSE ':' suite{lab3();}
+;
+
+test            : expr '<'{push();} expr{codegen();}
+                | expr '>'{push();} expr{codegen();}
+                | expr EQ{push_eq();} expr{codegen();}
+        		| expr LEQ{push();} expr{codegen();}
+        		| expr GEQ{push();} expr{codegen();}
+        		| expr NEQ{push();} expr{codegen();}
+        		| expr NNEQ{push();} expr{codegen();}
+        		| expr
+;
+
+expr            : atom '='{push();} expr{codegen_assign();}
+                | expr '+'{push();} expr{codegen();}
+                | expr '-'{push();} expr{codegen();}
+                | expr '*'{push();} expr{codegen();}
+                | expr '/'{push();} expr{codegen();}
+                | expr '%'{push();} expr{codegen();}
+                | '(' expr ')'
+                | '-'{push();} expr{codegen_umin();} %prec UMINUS
+                | atom
+                | INTEGER{push();}
+                | FLOAT{push();}
+;
+atom            : NAME {push_new();}
+;
 
 %%
 
@@ -149,7 +165,7 @@ void push()
 
 void push_new()
 {
-   cout<<yytext<<"\n";
+   // cout<<yytext<<"\n";
    st[++top]=yytext;
 }
 
@@ -232,6 +248,9 @@ printf("L%d: \n",x);
 label[++ltop]=lnum;
 }
 
+// void la8(){
+//     printf("goto L%\n",);
+// }
 void lab4()
 {
 int x;
@@ -266,13 +285,17 @@ int main(int argc, char** argv) {
 	cout<<"\n";
 	sym_tab* temp_s;
 	temp_s = head;
+    // cout<<"??";
+    // cout<<temp_s;
 	while(temp_s){
-		cout<<temp_s->name<<"	"<<temp_s->type<<"\n";
+        // cout<<"qq";
+		cout<<temp_s->name<<"	";
+        (temp_s->type==1)?cout<<"function\n":cout<<"variable\n";
 		temp_s=temp_s->next;
 	}
 }
 
 void yyerror(const char *s) {
-	cout << "EEK, parse error!  Message: " << s << endl;
-	exit(-1);
+    cout << "Message: " << s << endl;
+    exit(-1);
 }

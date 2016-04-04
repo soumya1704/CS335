@@ -1,25 +1,21 @@
-# Parser assignment
+# TAC assignment
 
 **How to build**
 
--To test, run 'make' from /asgn3
+-To test, run 'make' from /asgn4
 
--To clean, run 'make clean' from /asgn3
+-To clean, run 'make clean' from /asgn4
 
 **How to test**
 
--cd asgn3
+-cd asgn4
 
 -./bin/parser test/<filename>.py
 
--firefox example.html
-
 **Issues**
 
--Blank line throw syntax errors.
+-Functions not handled
 
 -Strings have been excluded.
 
 -FOR statement does not detect the suite contained in it.
-
--To see more about "for" statement, parse /test/for.py.

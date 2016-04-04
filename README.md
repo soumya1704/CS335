@@ -1,19 +1,19 @@
 # CS335
 
-Compiler design assignments.
+Compiler design assignments. Python to MIPS
 
 **Assignment 1**
 
--To test, run 'make' from /asgn1
-
--To clean, run 'make clean' from /asgn1
+-Basic lexer assignment, gives all tokens and count of tokens.
 
 **Assignment 2**
 
--Currently in shambles
+-[Currently in shambles] MIPS generator, converts from TAC IR
 
 **Assignment 3**
 
--To test, run 'make' from /asgn3
+-Parser assignment, with no function support. Indents works well though.
 
--To clean, run 'make clean' from /asgn3
+**Assignment 4**
+
+-TAC IR generator. To be fed to part2.

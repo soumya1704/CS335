@@ -1,7 +1,9 @@
-a, b=4, 5
+a=4
+b=5
 if a:
 	if b:
-		d
+		d=3
+	else:
+		f=4	
 else:
-	c
-print()
+	c=2

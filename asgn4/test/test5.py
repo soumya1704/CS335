@@ -1,12 +1,9 @@
-a, b=4, 5
+a=4
+b=5
 if a:
-	if b:
-		d
-	elif c:
-		print(d)
-	elif e:
-		print(k,k+1)		
+	while b:
+		b =b - 4
+	else :
+		b= d + 4
 else:
-	c
-print()
-
+	c = p+d
